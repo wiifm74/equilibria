@@ -131,7 +131,8 @@ npm run format       # Auto-format
 **Controller:**
 ```bash
 cd controller/build
-./equilibria_controller --config ../config/default.yaml
+./equilibria_controller --config ../config/machine.cfg
+# Configuration files: machine.cfg, roles.cfg, safety.cfg, sensors.cfg
 ```
 
 **API Server:**
@@ -146,7 +147,7 @@ equilibria-api
 ```bash
 cd ui/
 npm run dev
-# Open browser to http://localhost:5173 (or shown port)
+# Open browser to the URL displayed in the terminal (typically http://localhost:5173)
 ```
 
 ## File Organization Patterns
@@ -185,7 +186,7 @@ npm run dev
 5. Document in API reference
 
 ### Adding a new API endpoint
-1. Define route in `api/src/equilibria_api/`
+1. Define route in the API module (`api/src/`)
 2. Ensure no control logic—delegate to controller
 3. Add request/response validation
 4. Add unit tests
