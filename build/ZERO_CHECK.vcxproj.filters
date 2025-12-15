@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Dennis\Documents\GitHub\equilibria\build\CMakeFiles\a248da785260878b18086c539a27937c\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{00F83505-5B69-3458-AAD9-2E425ED10878}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
