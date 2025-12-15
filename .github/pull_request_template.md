@@ -13,7 +13,7 @@ Closes #
 - [ ] docs
 
 ## Safety & determinism
-- [ ] No new dynamic allocations added to the control loop
+- [ ] No new dynamic allocations added to the 100ms control loop
 - [ ] State machine transitions reviewed
 - [ ] Failure modes considered (timeouts, disconnects, invalid config)
 
