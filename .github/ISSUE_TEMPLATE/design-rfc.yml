@@ -1,0 +1,42 @@
+name: Design RFC
+description: Propose or change an architectural decision
+title: "[RFC] "
+labels: ["design"]
+body:
+  - type: textarea
+    attributes:
+      label: Context
+      description: What problem are we solving and why now?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposal
+      description: Describe the proposed change in clear terms.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Impact
+      description: What modules are affected (controller/shared/api/ui/sim)? Any migration work?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Alternatives considered
+      description: What other approaches were considered?
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Risks
+      description: Risks, failure modes, and mitigations.
+    validations:
+      required: false
+  - type: checkboxes
+    attributes:
+      label: Acceptance criteria
+      options:
+        - label: Documentation updated
+        - label: Tests updated/added
+        - label: Backwards compatibility considered
