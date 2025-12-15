@@ -125,6 +125,15 @@ inline std::string serialize_message(const std::string& type, const std::string&
     return oss.str();
 }
 
+// Type-safe message creation helpers (recommended for v0)
+inline std::string create_telemetry_message(const ipc::TelemetryPayload& telemetry) {
+    return serialize_message(ipc::MessageType::TELEMETRY, serialize_telemetry(telemetry));
+}
+
+inline std::string create_ack_message(const ipc::AckPayload& ack) {
+    return serialize_message(ipc::MessageType::ACK, serialize_ack(ack));
+}
+
 // Simple JSON value extraction (minimal parser for our needs)
 // Finds a field in JSON and returns its value as string
 inline std::optional<std::string> extract_json_field(const std::string& json, const std::string& field) {
@@ -155,11 +164,22 @@ inline std::optional<std::string> extract_json_field(const std::string& json, co
     char first_char = json[value_start];
     
     if (first_char == '"') {
-        // String value
+        // String value - find unescaped closing quote
         size_t end_quote = value_start + 1;
         while (end_quote < json.size()) {
-            if (json[end_quote] == '"' && json[end_quote - 1] != '\\') {
-                return json.substr(value_start + 1, end_quote - value_start - 1);
+            if (json[end_quote] == '"') {
+                // Count preceding backslashes
+                size_t backslash_count = 0;
+                size_t check_pos = end_quote - 1;
+                while (check_pos >= value_start && json[check_pos] == '\\') {
+                    ++backslash_count;
+                    if (check_pos == 0) break;
+                    --check_pos;
+                }
+                // If even number of backslashes (including 0), the quote is unescaped
+                if (backslash_count % 2 == 0) {
+                    return json.substr(value_start + 1, end_quote - value_start - 1);
+                }
             }
             ++end_quote;
         }

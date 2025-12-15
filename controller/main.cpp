@@ -72,7 +72,11 @@ struct ControllerState {
 
 // Send a message to a client
 bool send_message(socket_t client_socket, const std::string& message) {
+#ifdef _WIN32
+    int sent = send(client_socket, message.c_str(), static_cast<int>(message.length()), 0);
+#else
     ssize_t sent = send(client_socket, message.c_str(), message.length(), 0);
+#endif
     return sent > 0;
 }
 
@@ -86,8 +90,7 @@ void process_command(socket_t client_socket, ControllerState& state, const ipc::
         ack.status = ipc::AckStatus::ERROR;
         ack.message = "Unsupported protocol version: " + msg.version;
         
-        std::string ack_json = json::serialize_ack(ack);
-        std::string response = json::serialize_message(ipc::MessageType::ACK, ack_json);
+        std::string response = json::create_ack_message(ack);
         send_message(client_socket, response);
         return;
     }
@@ -96,8 +99,7 @@ void process_command(socket_t client_socket, ControllerState& state, const ipc::
     if (msg.type == ipc::MessageType::GET_TELEMETRY) {
         // Send telemetry immediately
         auto telemetry = state.get_telemetry();
-        std::string telemetry_json = json::serialize_telemetry(telemetry);
-        std::string response = json::serialize_message(ipc::MessageType::TELEMETRY, telemetry_json);
+        std::string response = json::create_telemetry_message(telemetry);
         send_message(client_socket, response);
         
     } else if (msg.type == ipc::MessageType::SET_MODE) {
@@ -117,8 +119,7 @@ void process_command(socket_t client_socket, ControllerState& state, const ipc::
             }
         }
         
-        std::string ack_json = json::serialize_ack(ack);
-        std::string response = json::serialize_message(ipc::MessageType::ACK, ack_json);
+        std::string response = json::create_ack_message(ack);
         send_message(client_socket, response);
         
     } else if (msg.type == ipc::MessageType::SET_TARGETS) {
@@ -140,16 +141,14 @@ void process_command(socket_t client_socket, ControllerState& state, const ipc::
                       << ", Flow: " << state.target_flow << std::endl;
         }
         
-        std::string ack_json = json::serialize_ack(ack);
-        std::string response = json::serialize_message(ipc::MessageType::ACK, ack_json);
+        std::string response = json::create_ack_message(ack);
         send_message(client_socket, response);
         
     } else {
         ack.status = ipc::AckStatus::ERROR;
         ack.message = "Unknown command type: " + msg.type;
         
-        std::string ack_json = json::serialize_ack(ack);
-        std::string response = json::serialize_message(ipc::MessageType::ACK, ack_json);
+        std::string response = json::create_ack_message(ack);
         send_message(client_socket, response);
     }
 }
@@ -163,8 +162,7 @@ void handle_client(socket_t client_socket, ControllerState& state) {
     std::thread telemetry_thread([&]() {
         while (telemetry_running && state.running) {
             auto telemetry = state.get_telemetry();
-            std::string telemetry_json = json::serialize_telemetry(telemetry);
-            std::string message = json::serialize_message(ipc::MessageType::TELEMETRY, telemetry_json);
+            std::string message = json::create_telemetry_message(telemetry);
             
             if (!send_message(client_socket, message)) {
                 break;
@@ -179,7 +177,11 @@ void handle_client(socket_t client_socket, ControllerState& state) {
     std::string incomplete_message;
     
     while (state.running) {
+#ifdef _WIN32
+        int received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
+#else
         ssize_t received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
+#endif
         
         if (received <= 0) {
             // Connection closed or error
