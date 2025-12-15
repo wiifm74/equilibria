@@ -1,0 +1,18 @@
+{
+  "name": "development branches",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "refs/heads/feature/*",
+        "refs/heads/bugfix/*",
+        "refs/heads/rfc/*",
+        "refs/heads/copilot/*"
+      ],
+      "exclude": []
+    }
+  },
+  "rules": [],
+  "bypass_actors": []
+}
