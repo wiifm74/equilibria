@@ -1,0 +1,33 @@
+name: Feature Request
+description: Propose a new feature or improvement
+labels: ["needs-triage", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem you're trying to solve, not just the solution.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What are you trying to accomplish? What's the current limitation?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else did you consider? Why didn't it fit?
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How would you verify this feature is working?
+      placeholder: "- [ ] When I do X, Y happens\n- [ ] The UI shows Z"
