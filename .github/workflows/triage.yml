@@ -1,0 +1,38 @@
+name: Issue Triage
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  triage:
+    if: github.event.label.name == 'needs-triage'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      models: read
+
+    # Prevent double-run when a template applies multiple labels at once
+    concurrency:
+      group: triage-${{ github.event.issue.number }}
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install openai==2.41.0
+
+      - name: Triage issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+        run: python .github/scripts/triage.py
